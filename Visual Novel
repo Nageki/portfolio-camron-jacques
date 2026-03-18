@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visuals Novels</title>
+</head>
+<body>
+  <h1>Découvrez des visuals novels</h1>
+  <p>Voici le sanglot des goeland plus connus sous le nom d'umineko no naku koro ni</p>
+  <image src="umineko.jpeg" alt="Description de l'image" width="300">
+  <image src="Beatoler.gif" alt="Description de l'image" width="300">
+  <br><a href="https://store.steampowered.com/app/406550/Umineko_When_They_Cry__Question_Arcs/" target="_blank"> <strong>Vous pouvez acheter les jeux ici</strong></a></br>
+  <br>Voici la série de jeux Danganronpa</br>
+  <image src="danganronpa.jpeg" alt="Description de l'image" width="300">
+  <br><a href="https://store.steampowered.com/app/413410/Danganronpa_Trigger_Happy_Havoc/?l=french" target="_blank"> <strong>Vous pouvez acheter les jeux ici</strong></a></br>
+   <br>Voici Tsukihime piece of blue glass moon</br>
+  <image src="tsukihime.jpeg" alt="Description de l'image" width="300">
+  <br><a href="https://tsukiweb.holofield.fr/" target="_blank"> <strong>Vous pouvez jouer au jeu ici</strong></a></br>
+  
+</body>
+</html>
