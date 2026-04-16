@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qui est-ce ? | Persona 3 Reload Edition</title>
+    <title>Qui est-ce ? | Analysis Mode</title>
     <link rel="stylesheet" href="style_jeu.css">
 </head>
 <body>
@@ -12,130 +12,105 @@
     <div id="main">
         <div id="col-gauche">
             <div class="panel-label">EVOKERS & TARGETS</div>
-            <div id="grille-persos">
-                </div>
+            <div id="grille-persos"></div>
         </div>
 
         <div id="col-droite">
-            <div class="panel-label">ANALYSIS</div>
-            <div id="questions-container">
-                </div>
-
+            <div class="panel-label">ANALYSIS SYSTEM</div>
+            <div id="questions-container"></div>
             <div class="action-row">
-                <button onclick="resetGame()" class="btn-p3-reset">RELOAD SESSION</button>
+                <button onclick="resetGame()" class="btn-reset">RELOAD SESSION</button>
             </div>
-
-            <div id="message">Initialisation de l'analyse...</div>
+            <div id="message">Initialisation...</div>
         </div>
-    </div>
-
-    <div class="p3-footer">
-        <div class="p3-line"></div>
-        <div class="p3-clock">THE DARK HOUR</div>
     </div>
 
     <script>
         const questions = [
-            "A-t-il des lunettes ?",
-            "A-t-il une moustache ?",
-            "A-t-il un chapeau ?",
-            "A-t-il des cheveux ?",
-            "A-t-il une boucle d'oreille ?",
-            "A-t-il une barbe ?",
+            "A-t-il des lunettes ?", "A-t-il une moustache ?", "A-t-il un chapeau ?",
+            "A-t-il des cheveux ?", "A-t-il une boucle d'oreille ?", "A-t-il une barbe ?",
             "A-t-il un nœud papillon ?"
         ];
 
-        // IMPORTANT : Liste EXACTE de tes fichiers images .png
+        // Vérifie bien que ces noms correspondent à tes fichiers dans /img
         const characterCodes = [
             "0000000", "0001111", "0010011", "0011100", "0100101", 
             "0101010", "0110110", "0111001", "1000110", "1001101", 
             "1010101", "1011010", "1100011", "1110000", "1111111"
         ];
 
-        let userAnswers = Array(questions.length).fill(null);
-        const maxLies = 2;
+        let userAnswers = Array(7).fill(null);
 
-        function initGame() {
+        function init() {
             renderQuestions();
-            updateDisplay();
+            update();
         }
 
         function renderQuestions() {
             const container = document.getElementById('questions-container');
             container.innerHTML = questions.map((q, i) => `
                 <div class="question-bloc">
-                    <h2>${i + 1}. ${q}</h2>
-                    <div class="btn-groupe">
-                        <button id="q${i}y" onclick="setAnswer(${i}, '1')">OUI</button>
-                        <button id="q${i}n" onclick="setAnswer(${i}, '0')">NON</button>
-                    </div>
+                    <p>${i + 1}. ${q}</p>
+                    <button id="btn-${i}-1" onclick="setAns(${i}, '1')">OUI</button>
+                    <button id="btn-${i}-0" onclick="setAns(${i}, '0')">NON</button>
                 </div>
             `).join('');
         }
 
-        function setAnswer(index, value) {
-            userAnswers[index] = value;
-            updateDisplay();
+        function setAns(index, val) {
+            userAnswers[index] = val;
+            update();
         }
 
         function resetGame() {
-            userAnswers = Array(questions.length).fill(null);
-            updateDisplay();
+            userAnswers.fill(null);
+            update();
         }
 
-        function updateDisplay() {
+        function update() {
             const answeredCount = userAnswers.filter(a => a !== null).length;
-            const allAnswered = answeredCount === questions.length;
             
-            let charactersData = characterCodes.map((code, index) => {
-                let mismatches = 0;
+            // Calcul des scores
+            const results = characterCodes.map(code => {
+                let diff = 0;
                 let syndrome = [];
                 userAnswers.forEach((ans, i) => {
                     if (ans !== null && code[i] !== ans) {
-                        mismatches++;
-                        syndrome.push(`Q${i + 1}`);
+                        diff++;
+                        syndrome.push("Q" + (i+1));
                     }
                 });
-                return { name: `Sujet ${index + 1}`, code, image: `img/${code}.png`, mismatches, syndrome };
+                return { code, diff, syndrome };
             });
 
-            const compatible = charactersData.filter(c => c.mismatches <= maxLies);
-            compatible.sort((a, b) => a.mismatches - b.mismatches);
-            const minMismatches = compatible.length > 0 ? compatible[0].mismatches : null;
+            // On cherche le score minimum (le perso qui ressemble le plus)
+            const minDiff = Math.min(...results.map(r => r.diff));
 
+            // Mise à jour de la Grille
             const grille = document.getElementById('grille-persos');
-            grille.innerHTML = charactersData.map(c => {
-                let statusClass = "";
-                if (allAnswered && minMismatches !== null && c.mismatches === minMismatches) {
-                    statusClass = "winner";
-                }
-                return `
-                    <div class="perso-card ${statusClass}" title="${c.syndrome.length > 0 ? 'Mensonges: ' + c.syndrome.join(', ') : ''}">
-                        <img src="${c.image}" alt="${c.name}">
-                        <span class="perso-nom">${c.name}</span>
-                    </div>
-                `;
+            grille.innerHTML = characterCodes.map((code, i) => {
+                const res = results[i];
+                let classes = "perso-card";
+                if (answeredCount === 7 && res.diff === minDiff && res.diff <= 2) classes += " winner";
+                return `<div class="${classes}"><img src="img/${code}.png"><br>Sujet ${i+1}</div>`;
             }).join('');
 
-            const msgBox = document.getElementById('message');
-            if (answeredCount === 0) {
-                msgBox.innerText = "En attente de données. Max 2 mensonges tolérés.";
-            } else if (!allAnswered) {
-                msgBox.innerText = `Analyse en cours : ${answeredCount}/7 questions.`;
-            } else if (minMismatches === null) {
-                msgBox.innerText = "CRITICAL ERROR: Aucun sujet compatible.";
-            } else {
-                const found = charactersData.filter(c => c.mismatches === minMismatches);
-                msgBox.innerText = `Cible identifiée : ${found[0].name}. Erreurs détectées : ${found[0].syndrome.join(', ') || '0'}.`;
+            // Mise à jour des Boutons (pour voir sur quoi on a cliqué)
+            for(let i=0; i<7; i++) {
+                document.getElementById(`btn-${i}-1`).className = userAnswers[i] === '1' ? 'is-selected' : '';
+                document.getElementById(`btn-${i}-0`).className = userAnswers[i] === '0' ? 'is-selected' : '';
             }
 
-            userAnswers.forEach((ans, i) => {
-                document.getElementById(`q${i}y`).className = ans === '1' ? 'is-selected' : '';
-                document.getElementById(`q${i}n`).className = ans === '0' ? 'is-selected' : '';
-            });
+            // Message
+            const msg = document.getElementById('message');
+            if (answeredCount < 7) {
+                msg.innerText = `Analyse : ${answeredCount}/7 données collectées...`;
+            } else {
+                const winners = results.filter(r => r.diff === minDiff);
+                msg.innerText = minDiff > 2 ? "ERREUR : Trop de mensonges détectés." : `Cible détectée (${minDiff} erreur(s))`;
+            }
         }
-
-        window.onload = initGame;
+        init();
     </script>
 </body>
 </html>
