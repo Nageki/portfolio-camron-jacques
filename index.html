@@ -1,84 +1,141 @@
 <!DOCTYPE html>
 <html lang="fr">
-<HEAD>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<TITLE>Qui est-ce ?</TITLE>
-<link rel="stylesheet" href="style_jeu.css">
-</HEAD>
-<BODY>
-<h1>Qui est-ce ?</h1>
-<div id="main">
-<div id="col-gauche">
-<div class="panel-label">PERSONNAGES</div>
-<div id="grille-persos">
-  <div class="perso-card"><img src="img/0000000.png" alt="Personnage 1"></div>
-  <div class="perso-card"><img src="img/0001111.png" alt="Personnage 2"></div>
-  <div class="perso-card"><img src="img/0010011.png" alt="Personnage 3"></div>
-  <div class="perso-card"><img src="img/0011100.png" alt="Personnage 4"></div>
-  <div class="perso-card"><img src="img/0100101.png" alt="Personnage 5"></div>
-  <div class="perso-card"><img src="img/0101010.png" alt="Personnage 6"></div>
-  <div class="perso-card"><img src="img/0110110.png" alt="Personnage 7"></div>
-  <div class="perso-card"><img src="img/0111001.png" alt="Personnage 8"></div>
-  <div class="perso-card"><img src="img/1000110.png" alt="Personnage 9"></div>
-</div>
-</div>
-<div id="col-droite">
-<div class="panel-label">QUESTIONS</div>
-<div class="question-bloc">
-<h2 id="Q1">1. A-t-il des lunettes ?</h2>
-<div class="btn-groupe">
-<INPUT id="b1O" type="button" value="OUI" onclick="oui(0)">
-<INPUT id="b1N" type="button" value="NON" onclick="non(0)">
-</div>
-</div>
-<div class="question-bloc">
-<h2 id="Q2">2. A-t-il une moustache ?</h2>
-<div class="btn-groupe">
-<INPUT id="b2O" type="button" value="OUI" onclick="oui(1)">
-<INPUT id="b2N" type="button" value="NON" onclick="non(1)">
-</div>
-</div>
-<div class="question-bloc">
-<h2 id="Q3">3. A-t-il un chapeau ?</h2>
-<div class="btn-groupe">
-<INPUT id="b3O" type="button" value="OUI" onclick="oui(2)">
-<INPUT id="b3N" type="button" value="NON" onclick="non(2)">
-</div>
-</div>
-<div class="question-bloc">
-<h2 id="Q4">4. A-t-il des cheveux ?</h2>
-<div class="btn-groupe">
-<INPUT id="b4O" type="button" value="OUI" onclick="oui(3)">
-<INPUT id="b4N" type="button" value="NON" onclick="non(3)">
-</div>
-</div>
-<div class="question-bloc">
-<h2 id="Q5">5. A-t-il une boucle d'oreille ?</h2>
-<div class="btn-groupe">
-<INPUT id="b5O" type="button" value="OUI" onclick="oui(4)">
-<INPUT id="b5N" type="button" value="NON" onclick="non(4)">
-</div>
-</div>
-<div class="question-bloc">
-<h2 id="Q6">6. A-t-il une barbe ?</h2>
-<div class="btn-groupe">
-<INPUT id="b6O" type="button" value="OUI" onclick="oui(5)">
-<INPUT id="b6N" type="button" value="NON" onclick="non(5)">
-</div>
-</div>
-<div class="question-bloc">
-<h2 id="Q7">7. A-t-il un nœud papillon ?</h2>
-<div class="btn-groupe">
-<INPUT id="b7O" type="button" value="OUI" onclick="oui(6)">
-<INPUT id="b7N" type="button" value="NON" onclick="non(6)">
-</div>
-</div>
-<div id="message"></div>
-</div>
-</div>
-<div class="pac-footer">
-<div class="pac-man"></div>
-</div>
-</BODY>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qui est-ce ? | Persona 3 Reload Edition</title>
+    <link rel="stylesheet" href="style_jeu.css">
+</head>
+<body>
+    <h1>Qui est-ce ?</h1>
+    
+    <div id="main">
+        <div id="col-gauche">
+            <div class="panel-label">EVOKERS & TARGETS</div>
+            <div id="grille-persos">
+                </div>
+        </div>
+
+        <div id="col-droite">
+            <div class="panel-label">ANALYSIS</div>
+            <div id="questions-container">
+                </div>
+
+            <div class="action-row">
+                <button onclick="resetGame()" class="btn-p3-reset">RELOAD SESSION</button>
+            </div>
+
+            <div id="message">Initialisation de l'analyse...</div>
+        </div>
+    </div>
+
+    <div class="p3-footer">
+        <div class="p3-line"></div>
+        <div class="p3-clock">THE DARK HOUR</div>
+    </div>
+
+    <script>
+        const questions = [
+            "A-t-il des lunettes ?",
+            "A-t-il une moustache ?",
+            "A-t-il un chapeau ?",
+            "A-t-il des cheveux ?",
+            "A-t-il une boucle d'oreille ?",
+            "A-t-il une barbe ?",
+            "A-t-il un nœud papillon ?"
+        ];
+
+        // IMPORTANT : Liste EXACTE de tes fichiers images .png
+        const characterCodes = [
+            "0000000", "0001111", "0010011", "0011100", "0100101", 
+            "0101010", "0110110", "0111001", "1000110", "1001101", 
+            "1010101", "1011010", "1100011", "1110000", "1111111"
+        ];
+
+        let userAnswers = Array(questions.length).fill(null);
+        const maxLies = 2;
+
+        function initGame() {
+            renderQuestions();
+            updateDisplay();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = questions.map((q, i) => `
+                <div class="question-bloc">
+                    <h2>${i + 1}. ${q}</h2>
+                    <div class="btn-groupe">
+                        <button id="q${i}y" onclick="setAnswer(${i}, '1')">OUI</button>
+                        <button id="q${i}n" onclick="setAnswer(${i}, '0')">NON</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setAnswer(index, value) {
+            userAnswers[index] = value;
+            updateDisplay();
+        }
+
+        function resetGame() {
+            userAnswers = Array(questions.length).fill(null);
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            const answeredCount = userAnswers.filter(a => a !== null).length;
+            const allAnswered = answeredCount === questions.length;
+            
+            let charactersData = characterCodes.map((code, index) => {
+                let mismatches = 0;
+                let syndrome = [];
+                userAnswers.forEach((ans, i) => {
+                    if (ans !== null && code[i] !== ans) {
+                        mismatches++;
+                        syndrome.push(`Q${i + 1}`);
+                    }
+                });
+                return { name: `Sujet ${index + 1}`, code, image: `img/${code}.png`, mismatches, syndrome };
+            });
+
+            const compatible = charactersData.filter(c => c.mismatches <= maxLies);
+            compatible.sort((a, b) => a.mismatches - b.mismatches);
+            const minMismatches = compatible.length > 0 ? compatible[0].mismatches : null;
+
+            const grille = document.getElementById('grille-persos');
+            grille.innerHTML = charactersData.map(c => {
+                let statusClass = "";
+                if (allAnswered && minMismatches !== null && c.mismatches === minMismatches) {
+                    statusClass = "winner";
+                }
+                return `
+                    <div class="perso-card ${statusClass}" title="${c.syndrome.length > 0 ? 'Mensonges: ' + c.syndrome.join(', ') : ''}">
+                        <img src="${c.image}" alt="${c.name}">
+                        <span class="perso-nom">${c.name}</span>
+                    </div>
+                `;
+            }).join('');
+
+            const msgBox = document.getElementById('message');
+            if (answeredCount === 0) {
+                msgBox.innerText = "En attente de données. Max 2 mensonges tolérés.";
+            } else if (!allAnswered) {
+                msgBox.innerText = `Analyse en cours : ${answeredCount}/7 questions.`;
+            } else if (minMismatches === null) {
+                msgBox.innerText = "CRITICAL ERROR: Aucun sujet compatible.";
+            } else {
+                const found = charactersData.filter(c => c.mismatches === minMismatches);
+                msgBox.innerText = `Cible identifiée : ${found[0].name}. Erreurs détectées : ${found[0].syndrome.join(', ') || '0'}.`;
+            }
+
+            userAnswers.forEach((ans, i) => {
+                document.getElementById(`q${i}y`).className = ans === '1' ? 'is-selected' : '';
+                document.getElementById(`q${i}n`).className = ans === '0' ? 'is-selected' : '';
+            });
+        }
+
+        window.onload = initGame;
+    </script>
+</body>
 </html>
