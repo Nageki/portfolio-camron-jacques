@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<HEAD>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<TITLE>Qui est-ce ?</TITLE>
+<link rel="stylesheet" href="style_jeu.css">
+</HEAD>
+<BODY>
+<h1>Qui est-ce ?</h1>
+<div id="main">
+<div id="col-gauche">
+<div class="panel-label">PERSONNAGES</div>
+<div id="grille-persos">
+  <div class="perso-card"><img src="img/0000000.jpg" alt="Personnage 1"></div>
+  <div class="perso-card"><img src="img/0001101.jpg" alt="Personnage 2"></div>
+  <div class="perso-card"><img src="img/0011100.jpg" alt="Personnage 3"></div>
+  <div class="perso-card"><img src="img/0100011.jpg" alt="Personnage 4"></div>
+  <div class="perso-card"><img src="img/0100101.jpg" alt="Personnage 5"></div>
+  <div class="perso-card"><img src="img/0101010.jpg" alt="Personnage 6"></div>
+  <div class="perso-card"><img src="img/0101111.jpg" alt="Personnage 7"></div>
+  <div class="perso-card"><img src="img/0110011.jpg" alt="Personnage 8"></div>
+  <div class="perso-card"><img src="img/0111011.jpg" alt="Personnage 9"></div>
+</div>
+</div>
+<div id="col-droite">
+<div class="panel-label">QUESTIONS</div>
+<div class="question-bloc">
+<h2 id="Q1">1. A-t-il des lunettes ?</h2>
+<div class="btn-groupe">
+<INPUT id="b1O" type="button" value="OUI" onclick="oui(0)">
+<INPUT id="b1N" type="button" value="NON" onclick="non(0)">
+</div>
+</div>
+<div class="question-bloc">
+<h2 id="Q2">2. A-t-il une moustache ?</h2>
+<div class="btn-groupe">
+<INPUT id="b2O" type="button" value="OUI" onclick="oui(1)">
+<INPUT id="b2N" type="button" value="NON" onclick="non(1)">
+</div>
+</div>
+<div class="question-bloc">
+<h2 id="Q3">3. A-t-il un chapeau ?</h2>
+<div class="btn-groupe">
+<INPUT id="b3O" type="button" value="OUI" onclick="oui(2)">
+<INPUT id="b3N" type="button" value="NON" onclick="non(2)">
+</div>
+</div>
+<div class="question-bloc">
+<h2 id="Q4">4. A-t-il des cheveux ?</h2>
+<div class="btn-groupe">
+<INPUT id="b4O" type="button" value="OUI" onclick="oui(3)">
+<INPUT id="b4N" type="button" value="NON" onclick="non(3)">
+</div>
+</div>
+<div class="question-bloc">
+<h2 id="Q5">5. A-t-il une boucle d'oreille ?</h2>
+<div class="btn-groupe">
+<INPUT id="b5O" type="button" value="OUI" onclick="oui(4)">
+<INPUT id="b5N" type="button" value="NON" onclick="non(4)">
+</div>
+</div>
+<div class="question-bloc">
+<h2 id="Q6">6. A-t-il une barbe ?</h2>
+<div class="btn-groupe">
+<INPUT id="b6O" type="button" value="OUI" onclick="oui(5)">
+<INPUT id="b6N" type="button" value="NON" onclick="non(5)">
+</div>
+</div>
+<div class="question-bloc">
+<h2 id="Q7">7. A-t-il un nœud papillon ?</h2>
+<div class="btn-groupe">
+<INPUT id="b7O" type="button" value="OUI" onclick="oui(6)">
+<INPUT id="b7N" type="button" value="NON" onclick="non(6)">
+</div>
+</div>
+<div id="message"></div>
+</div>
+</div>
+<div class="pac-footer">
+<div class="pac-man"></div>
+</div>
+</BODY>
+</html>
